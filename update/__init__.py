@@ -32,7 +32,6 @@ def run_operation(operation, nodes_type_update, operation_kwargs, **kwargs):
                     for relationship in instance.relationships:
                         ctx.logger.info(relationship.relationship.target_id)
                         if relationship.relationship.target_id == 'nginx':
-                            ctx.logger.info('rel op')
                             operation_unlink = 'cloudify.interfaces.relationship_lifecycle.unlink'
                             forkjoin_tasks_unlink.append(relationship.execute_source_operation(operation_unlink))
                             forkjoin_tasks_unlink.append(relationship.execute_target_operation(operation_unlink))
@@ -50,7 +49,9 @@ def run_operation(operation, nodes_type_update, operation_kwargs, **kwargs):
                     sequence.add(
                         send_event_starting_tasks[instance.id],
                         operation_task_unlink,
+                        instance.execute_operation('cloudify.interfaces.lifecycle.stop', kwargs=operation_kwargs),
                         instance.execute_operation('cloudify.interfaces.lifecycle.update', kwargs=operation_kwargs),
+                        instance.execute_operation('cloudify.interfaces.lifecycle.start', kwargs=operation_kwargs),
                         operation_task_link,
                         send_event_done_tasks[instance.id])
 
