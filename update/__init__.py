@@ -1,10 +1,22 @@
+#######################################################################
+#
+#   Copyright (c) 2016 Orange
+#   valentin.boucher@orange.com
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+########################################################################
+
+
 from cloudify.decorators import workflow
 from cloudify.workflows import ctx
 from cloudify.workflows.tasks_graph import forkjoin
 import pprint
 
 @workflow
-def run_operation(operation, nodes_types_list, nodes_types_dependency, operation_kwargs, **kwargs):
+def run_operation(operation, nodes_types_list, nodes_types_dependency, relations_unlink, operation_kwargs, **kwargs):
     graph = ctx.graph_mode()
     send_event_starting_tasks = {}
     send_event_done_tasks = {}
@@ -32,7 +44,7 @@ def run_operation(operation, nodes_types_list, nodes_types_dependency, operation
                     forkjoin_tasks_unlink = []
                     for relationship in instance.relationships:
                         ctx.logger.info(relationship.relationship.target_id)
-                        if relationship.relationship.target_id == 'nginx':
+                        if relationship.relationship.target_id in relations_unlink:
                             operation_unlink = 'cloudify.interfaces.relationship_lifecycle.unlink'
                             forkjoin_tasks_unlink.append(relationship.execute_source_operation(operation_unlink))
                             forkjoin_tasks_unlink.append(relationship.execute_target_operation(operation_unlink))
@@ -40,7 +52,7 @@ def run_operation(operation, nodes_types_list, nodes_types_dependency, operation
 
                     forkjoin_tasks_link = []
                     for relationship in instance.relationships:
-                        if relationship.relationship.target_id == 'nginx':
+                        if relationship.relationship.target_id in relations_unlink:
                             ctx.logger.info('rel op')
                             operation_link = 'cloudify.interfaces.relationship_lifecycle.establish'
                             forkjoin_tasks_link.append(relationship.execute_source_operation(operation_link))

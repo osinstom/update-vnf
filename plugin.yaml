@@ -1,21 +1,36 @@
+#######################################################################
+#
+#   Copyright (c) 2016 Orange
+#   valentin.boucher@orange.com
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+########################################################################
+
 plugins:
   update-workflow:
     executor: central_deployment_agent
     source: https://github.com/boucherv-orange/update-vnf/archive/master.zip
 
 workflows:
-  update-app:
+  upgrade-vnf:
     mapping: update-workflow.update.run_operation
     parameters:
       operation:
         description: the operation to execute
       nodes_types_list:
-        description: the base type for filtering nodes
+        description: List of nodes that need to be updated/upgraded
         default:
           - simple.nodes.client
       nodes_types_dependency:
-        description: add dependency between nodes types update task
+        description: Add dependency between nodes types update task
         default: false
+      relations_unlink:
+        description: Target name of the relationships to be broken during the update
+        default:
+          - nginx
       operation_kwargs:
         description: the operation kwargs
         default: {}
