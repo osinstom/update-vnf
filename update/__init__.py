@@ -4,22 +4,23 @@ from cloudify.workflows.tasks_graph import forkjoin
 import pprint
 
 @workflow
-def run_operation(operation, nodes_type_update, operation_kwargs, **kwargs):
+def run_operation(operation, nodes_types_list, nodes_types_dependency, operation_kwargs, **kwargs):
     graph = ctx.graph_mode()
     send_event_starting_tasks = {}
     send_event_done_tasks = {}
 
 
-    for node_type_update in nodes_type_update:
+    for node_type_update in nodes_types_list:
         for node in ctx.nodes:
             if node.type == node_type_update:
                 for instance in node.instances:
                     send_event_starting_tasks[instance.id] = instance.send_event('Starting to run operation')
                     send_event_done_tasks[instance.id] = instance.send_event('Done running operation')
 
-
-    for node_type_update in nodes_type_update:
-        previous_task = None
+    previous_task = None
+    for node_type_update in nodes_types_list:
+        if not nodes_types_dependency:
+            previous_task = None
         for node in ctx.nodes:
             if node.type == node_type_update:
                 for instance in node.instances:
