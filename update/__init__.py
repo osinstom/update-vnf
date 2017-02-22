@@ -63,7 +63,7 @@ def run_operation(operation, nodes_types_list, nodes_types_dependency, relations
                         send_event_starting_tasks[instance.id],
                         operation_task_unlink,
                         instance.execute_operation('cloudify.interfaces.lifecycle.stop', kwargs=operation_kwargs),
-                        instance.execute_operation('cloudify.interfaces.lifecycle.upgrate', kwargs=operation_kwargs),
+                        instance.execute_operation('cloudify.interfaces.lifecycle.upgrade', kwargs=operation_kwargs),
                         instance.execute_operation('cloudify.interfaces.lifecycle.start', kwargs=operation_kwargs),
                         operation_task_link,
                         send_event_done_tasks[instance.id])
