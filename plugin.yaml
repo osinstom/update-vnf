@@ -1,0 +1,18 @@
+plugins:
+  update-workflow:
+    executor: central_deployment_agent
+    source: https://github.com/boucherv-orange/update-vnf/archive/master.zip
+
+workflows:
+  update-app:
+    mapping: update-workflow.update.run_operation
+    parameters:
+      operation:
+        description: the operation to execute
+      nodes_type_update:
+        description: the base type for filtering nodes
+        default:
+          - simple.nodes.client
+      operation_kwargs:
+        description: the operation kwargs
+        default: {}
