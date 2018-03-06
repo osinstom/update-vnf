@@ -70,7 +70,7 @@ def run_operation(operation, nodes_types_list, nodes_types_dependency, relations
 
                     if previous_task:
                         graph.add_dependency(send_event_starting_tasks.get(instance.id), send_event_done_tasks.get(previous_task))
-                        with open("/file_out.txt", "w") as f:
+                        with open("/etc/cloudify/file_out.txt", "w") as f:
                             pprint.pprint(previous_task, f)
                     previous_task = instance.id
 
