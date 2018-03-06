@@ -12,7 +12,7 @@
 plugins:
   update-workflow:
     executor: central_deployment_agent
-    source: https://github.com/boucherv-orange/update-vnf/archive/master.zip
+    source: https://github.com/osinstom/update-vnf/archive/master.zip
 
 workflows:
   upgrade-vnf:
